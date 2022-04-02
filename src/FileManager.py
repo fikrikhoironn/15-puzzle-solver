@@ -1,10 +1,8 @@
-
 class FileManager:
+    '''
+    membuat matrix puzzle dari file 
+    '''
     def __init__(self, path):
-        # self.board = []
-        # f = open(path, "r")
-        # for line in f:
-        #     self.board.append(list(map(lambda x : int(x), line.split())))
         f = open(path, "r")
         temp = f.readlines()
         self.matrix = []
@@ -18,7 +16,9 @@ class FileManager:
                 else :
                     self.matrix[i][j] = int(self.matrix[i][j])
 
-            
-    def get_board(self):
-        # return self.board
+    '''
+    mengambil matrix puzzle
+    return: matrix puzzle
+    '''        
+    def getMatrix(self):
         return self.matrix

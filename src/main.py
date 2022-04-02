@@ -4,15 +4,54 @@
 from Puzzle import Puzzle
 from FileManager import FileManager
 from PriorityQueue import PriorityQueue
-from Tree import Tree
+from Node import Node
 from Constant import SIZE
 from PuzzleGenerator import PuzzleGenerator
 import time
 
-# g(i) function for checking misplaced tiles
-def number_misplaced_tiles(puzzle):
+
+'''
+megecek apakah puzzle sudah terurut
+parameter:
+    puzzle: puzzle yang akan dicek
+return:
+    True jika puzzle sudah terurut
+'''
+def isFinish(puzzle):
+    flat = puzzle.oneLineBoard()
+    for i in range(1, (SIZE**2)+1):
+        if(flat[i-1] != i):
+            return False
+
+    return True
+
+'''
+mencetak puzzle solusi langkah yang diambil sampai ke solusi akhir
+'''
+def generateSolution(solved_state):
+    Node_solution = []
+
+    parent = solved_state.parent
+    state = solved_state
+
+    while(parent != None):
+       Node_solution.insert(0, state) 
+       state = parent
+       parent = parent.parent
+    for i in range(len(Node_solution)):
+        Node_solution[i].root.printBoard()
+    return Node_solution
+
+'''
+mengecek banyak tiles yang tidak sesuai dengan posisinya
+parameter:
+    puzzle: puzzle yang akan dicek
+return:
+    banyak tiles yang tidak sesuai dengan posisinya
+'''
+def numberMisplacedTiles(puzzle):
     result = 0
-    flat = puzzle.flattened_board()
+    flat = puzzle.oneLineBoard()
     
     for i in range(1, SIZE**2+1):
         if(flat[i-1] != i):
@@ -20,117 +59,103 @@ def number_misplaced_tiles(puzzle):
 
     return result
 
-# Check whether matrix is sorted or not
-def is_finish(puzzle):
-    flat = puzzle.flattened_board()
-    for i in range(1, (SIZE**2)+1):
-        if(flat[i-1] != i):
-            return False
-
-    return True
-
-# Generate solution from solved node
-def generate_solution(solved_state):
-    tree_solution = []
-
-    parent = solved_state.parent
-    state = solved_state
-
-    while(parent != None):
-       tree_solution.insert(0, state) 
-       state = parent
-       parent = parent.parent
-    for i in range(len(tree_solution)):
-        tree_solution[i].root.output_board()
-    return tree_solution
-
 
 def main():
-    choose = int(input("1. Random puzzle\n2. Input puzzle\n"))
+    '''
+    Tahap Input
+    '''
+    choose = int(input("1. Random puzzle\n2. Input puzzle (direkomendasikan)\n"))
     if (choose == 1):
         file = PuzzleGenerator()
-        root = Tree(Puzzle(file.get_board()))
+        root = Node(Puzzle(file.getMatrix()))
     elif(choose == 2):
-        filename = input("Masukkan nama file puzzle: ")
+        filename = input("Masukkan nama file puzzle: contoh: solveable_01.txt\n ")
         try:
             fm = FileManager("../test/" + filename)
-            root = Tree(Puzzle(fm.get_board()))
+            root = Node(Puzzle(fm.getMatrix()))
         except:
             print("File tidak ditemukan")
             exit()
     else:
         print("Input salah")
         exit()
-    # Initiate root
-    root.root.output_board()
+
+    '''
+    Tahap Inisiasi
+    '''
+    # menginisiasi root
+    root.root.printBoard()
     print()
-    # Check if puzzle is solveable
-    if(not root.root.is_solveable()):
+
+    # mengecek apakah puzzle dapat diselesaikan
+    if(not root.root.solveable()):
         print("Puzzle tidak dapat diselesaikan.")
         exit()
 
     print("Puzzle dapat diselesaikan.")
     print()
 
-    # Node generated count
-    node_count = 1
+    # menginisiasi simpul yang dibuat
+    nodeCount = 1
 
-    # Make priority queue for branching
-    # On priority : lowest cost with last in first
-    cost_function = number_misplaced_tiles
+    # cost terendah diprioritaskan dalam priority queue
+    costFunction = numberMisplacedTiles
+    pq = PriorityQueue(lambda x,y : x.depth + costFunction(x.root) <= y.depth + costFunction(y.root))
 
-
-    pq = PriorityQueue(lambda x,y : x.depth + cost_function(x.root) <= y.depth + cost_function(y.root))
-
-    # Initiate priority queue
+    # menginisiasi priority queue
     pq.push(root)
 
-    # Variable to store solution state
-    solution_state = None
+    # variabel menyimpan state solusi
+    solutionState = None
 
-    # List possible moves for puzzle
-    moves_units = [(-1,0), (0,-1), (1,0), (0,1)]
-    moves_names = ["Up", "Left", "Down", "Right"]
+    # variabel menyimpan kemungkinan move di puzzle
+    movesUnits = [(-1,0), (0,-1), (1,0), (0,1)]
+    movesNames = ["Up", "Left", "Down", "Right"]
 
     # Start timer
     time_start = time.process_time_ns()
+    
 
-    # Searching for solution using Branch and Bound
-
-    while(not pq.is_empty()):
-        # Get front item in queue
+    '''
+    Tahap Pencarian Dengan Branch and Bound
+    '''
+    while(not pq.isEmpty()):
+        # mengambil item palign depan dari queue
         current = pq.front()
         pq.pop()
 
-        # If currently checking final state, save the current state
-        if(is_finish(current.root)):
-            solution_state = current
+        # jika puzzle sudah terurut maka simpan state lalu berhenti
+        if(isFinish(current.root)):
+            solutionState = current
             break
 
-        # Append generate states to pq
-        for i, (dr, dc) in enumerate(moves_units):
-            # If moves are NOT opposite to previous move, generate new node
-            if(moves_names[(i+2)%4] != current.move):
-                # Generate node
-                result = Tree(current.root.move(dr, dc), parent=current, depth=current.depth+1, move=moves_names[i])
+        # memasukkan setiap status yang mungkin ke priority queue
+        for i, (dr, dc) in enumerate(movesUnits):
+            if(movesNames[(i+2)%4] != current.move):
+                # membuat simpul
+                result = Node(current.root.move(dr, dc), parent=current, depth=current.depth+1, move=movesNames[i])
 
-                # If move is possible..
+                # Jika move bisa dilakukan, maka tambahkan ke priority queue
                 if(result != None and result.root != None):
-                    node_count += 1
+                    nodeCount += 1
                     pq.push( result )
 
     # Stop timer
     time_stop = time.process_time_ns()
 
-     # Generate solution from result
-    solution_array = generate_solution(solution_state)
-    # Output details
-    print("Total moves:", len(solution_array))
+    '''
+    Tahap Output
+    '''
+    # membuat array yang berisi simpul simpul dari pohon ruang status yuang diambil
+    solutionArray = generateSolution(solutionState)
 
-    # Output nodes generated
-    print(node_count,"simpul dibuat")
+    # Total moves yang dilakukan
+    print("Total moves:", len(solutionArray))
 
-    # Output time
+    # Banyak simpul dibuat
+    print(nodeCount,"simpul dibuat")
+
+    # Total waktu yang digunakan
     time_delta = time_stop - time_start
     print("Total waktu: ", time_delta / 1000000, "ms")
 

@@ -1,33 +1,42 @@
-# priorityqueue.py
-# Contains the class PriorityQueue
-
+import heapq
 class PriorityQueue:
-    # Constructor
-    def __init__(self, priority_function):
+    '''
+    membuat priorityFunction
+    '''
+    def __init__(self, priorityFunction):
         self.queue = []
-        self.func = priority_function
+        self.function = priorityFunction
     
-    # Check if PQ is empty
-    def is_empty(self):
-        return len(self.queue) == 0
-
-    # Peek function
-    def front(self):
-        return self.queue[0]
-
-    # Insert item with corresponding function; O(n)
+    '''
+    memasukkan elemen ke antrian sesuai dengan fungsi yang didefinisikan
+    '''
     def push(self, item):
         pos = 0
         found = False
 
         while(not found and pos < len(self.queue)):
-            if(self.func(item, self.queue[pos])):
+            if(self.function(item, self.queue[pos])):
                 found = True
             else:
                 pos+=1
         
         self.queue.insert(pos, item)
 
-    # Remove front item; O(1)
+    '''
+    melakukan pop elemen dari antrian
+    '''
     def pop(self):
         self.queue.pop(0)
+
+    '''
+    melihat elemen antrian terdepan
+    '''
+    def front(self):
+        return self.queue[0]
+
+    '''
+    mengecek apakah priority queue kosong
+    '''
+    def isEmpty(self):
+        return len(self.queue) == 0
+
