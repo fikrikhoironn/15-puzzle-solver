@@ -69,7 +69,7 @@ def main():
         file = PuzzleGenerator()
         root = Node(Puzzle(file.getMatrix()))
     elif(choose == 2):
-        filename = input("Masukkan nama file puzzle: contoh: solveable_01.txt\n ")
+        filename = input("Masukkan nama file puzzle: contoh: solveable_01.txt\n")
         try:
             fm = FileManager("../test/" + filename)
             root = Node(Puzzle(fm.getMatrix()))
@@ -141,7 +141,7 @@ def main():
                     pq.push( result )
 
     # Stop timer
-    time_stop = time.process_time_ns()
+    time_end = time.process_time_ns()
 
     '''
     Tahap Output
@@ -156,8 +156,8 @@ def main():
     print(nodeCount,"simpul dibuat")
 
     # Total waktu yang digunakan
-    time_delta = time_stop - time_start
-    print("Total waktu: ", time_delta / 1000000, "ms")
+    total_time = time_end - time_start
+    print("Total waktu: ", total_time / 1000000, "ms")
 
 if __name__ == "__main__":
     main()
