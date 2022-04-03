@@ -61,10 +61,12 @@ class Puzzle:
 
         sum = 0
         for i in range(0,SIZE**2):
+            var = 0
             for j in range(i+1,SIZE**2):
                 if(flat[i]>flat[j]):
                     sum+=1
-
+                    var+=1
+            print("Kurang(",flat[i],") = ", var)
         print("Sigma Kurang(i):", sum)
         print("X:", x)
         print("Total:", sum + x, "(genap)" if (sum+x) % 2 == 0 else "(ganjil)")
