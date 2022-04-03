@@ -1,3 +1,6 @@
+'''
+Filemanager bertanggung jawab untuk mengonversi input dari file menjadi matrix
+'''
 class FileManager:
     '''
     membuat matrix puzzle dari file 

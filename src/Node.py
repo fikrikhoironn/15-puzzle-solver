@@ -1,5 +1,3 @@
-# Node.py
-# Contains the class Node to represent the state space Node in BnB
 '''
 Node digunakan untuk merepresentasikan pohon ruang status dalam branch and bound
 '''

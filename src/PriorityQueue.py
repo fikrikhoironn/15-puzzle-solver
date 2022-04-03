@@ -1,4 +1,6 @@
-import heapq
+'''
+pririty queue digunakan untuk membuat antrian dari simpul hidup
+'''
 class PriorityQueue:
     '''
     membuat priorityFunction

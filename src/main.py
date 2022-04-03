@@ -1,5 +1,6 @@
-# main.py
-# Contains main program and several functions for aiding Branch and Bound
+'''
+main.py bertanggung jawab dalam menjalankan program dengan algoritma branch and bound
+'''
 
 from Puzzle import Puzzle
 from FileManager import FileManager
