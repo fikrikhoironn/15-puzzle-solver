@@ -2,7 +2,6 @@
 > Menggunakan algoritma branch and bound
 
 ## Introduction
-This was a small project created in order to fulfill the requirements of IF2211 Algorithm Strategy course in Institut Teknologi Bandung (ITB) Academic Year of 2019/2020. This project was created using Python and some of its built-in library.
 Program ini dibuat untuk memenuhi tugas kecil IF2211 Strategi Algoritma Institut Teknologi Bandung 2022/2023. Program ini dibuat dengan Python.
 
 ## Prerequisites
