@@ -11,3 +11,7 @@ Python 3.
 1. masuk ke src
 2. jalankan dengan `python3 main.py`
 3. masukkan input 1 untuk random puuzle atau 2 untuk input dari folder test.
+
+## Author
+FIKRI KHOIRON FADHILA
+13520056
