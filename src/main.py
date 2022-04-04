@@ -40,6 +40,7 @@ def generateSolution(solved_state):
        state = parent
        parent = parent.parent
     for i in range(len(Node_solution)):
+        print("Langkah ke - " + str(i+1))
         Node_solution[i].root.printBoard()
     return Node_solution
 
